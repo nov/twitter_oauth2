@@ -27,7 +27,10 @@ module TwitterOAuth2
     private
 
     def setup_pkce_session
-      code_verifier = SecureRandom.hex(8)
+      code_verifier = Base64.urlsafe_encode64(
+        SecureRandom.random_bytes(32),
+        padding: false
+      )
       code_challenge = Base64.urlsafe_encode64(
         OpenSSL::Digest::SHA256.digest(code_verifier),
         padding: false

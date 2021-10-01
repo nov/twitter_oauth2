@@ -1,8 +1,10 @@
 require 'webmock/rspec'
 
 module WebMockHelper
-  def mock_json(method, endpoint, response_file, options = {})
-    stub_request(method, endpoint).to_return(
+  def mock_response(method, endpoint, response_file, options = {})
+    stub_request(method, endpoint).with(
+      request_for(method, options)
+    ).to_return(
       response_for(response_file, options)
     )
     result = yield
@@ -19,6 +21,21 @@ module WebMockHelper
   end
 
   private
+
+  def request_for(method, options = {})
+    request = {}
+    params = options.try(:[], :params) || {}
+    case method
+    when :post, :put, :delete
+      request[:body] = params
+    else
+      request[:query] = params
+    end
+    if options[:request_header]
+      request[:headers] = options[:request_header]
+    end
+    request
+  end
 
   def response_for(response_file, options = {})
     response = {}

@@ -1,5 +1,7 @@
 module TwitterOAuth2
   class Client < Rack::OAuth2::Client
+    attr_accessor :code_verifier
+
     def initialize(attributes)
       attributes_with_default = {
         authorization_endpoint: 'https://twitter.com/i/oauth2/authorize',
@@ -9,33 +11,31 @@ module TwitterOAuth2
     end
 
     def authorization_uri(params = {})
-      code_challenge, code_verifier = setup_pkce_session
+      code_challenge = pkce_session!
       authorization_uri = super({
         code_challenge: code_challenge,
         code_challenge_method: :s256
       }.merge(params))
-      [authorization_uri, code_verifier]
     end
 
     def access_token!(*args)
       options = args.extract_options!
       super :body, {
-        code_verifier: args.first
+        code_verifier: args.first || self.code_verifier
       }.merge(options)
     end
 
     private
 
-    def setup_pkce_session
-      code_verifier = Base64.urlsafe_encode64(
+    def pkce_session!
+      self.code_verifier = Base64.urlsafe_encode64(
         SecureRandom.random_bytes(32),
         padding: false
       )
-      code_challenge = Base64.urlsafe_encode64(
+      Base64.urlsafe_encode64(
         OpenSSL::Digest::SHA256.digest(code_verifier),
         padding: false
       )
-      [code_challenge, code_verifier]
     end
   end
 end

@@ -14,13 +14,11 @@ RSpec.describe TwitterOAuth2::Client do
   end
 
   describe '#authorization_uri' do
-    before do
-      @authorization_uri, @code_verifier = client.authorization_uri
-    end
+    let(:authorization_uri) { client.authorization_uri }
 
     describe 'query' do
       subject do
-        query = URI.parse(@authorization_uri).query
+        query = URI.parse(authorization_uri).query
         Rack::Utils.parse_query(query).with_indifferent_access
       end
 
@@ -34,11 +32,16 @@ RSpec.describe TwitterOAuth2::Client do
         should == 's256'
       end
     end
+  end
 
-    describe 'code_verifier' do
-      it do
-        @code_verifier.should_not be_blank
-      end
+  describe '#code_verifier' do
+    context 'before authorization_uri called' do
+      its(:code_verifier) { should be_nil }
+    end
+
+    context 'after authorization_uri called' do
+      before { client.authorization_uri }
+      its(:code_verifier) { should_not be_nil }
     end
   end
 
@@ -65,7 +68,7 @@ RSpec.describe TwitterOAuth2::Client do
           client.authorization_code = 'code'
         end
 
-        context 'when code_verifier is given as the first args' do
+        shared_examples_for :with_code_verifier do
           it do
             mock_response(
               :post,
@@ -78,30 +81,12 @@ RSpec.describe TwitterOAuth2::Client do
                 code_verifier: 'code_verifier'
               }
             ) do
-              client.access_token! 'code_verifier'
+              token_request
             end
           end
         end
 
-        context 'when code_verifier is given as hash member' do
-          it do
-            mock_response(
-              :post,
-              'https://api.twitter.com/2/oauth2/token',
-              'access_token/bearer',
-              params: {
-                client_id: 'client_id',
-                grant_type: 'authorization_code',
-                code: 'code',
-                code_verifier: 'code_verifier'
-              }
-            ) do
-              client.access_token! code_verifier: 'code_verifier'
-            end
-          end
-        end
-
-        context 'otherwise' do
+        shared_examples_for :without_code_verifier do
           it do
             mock_response(
               :post,
@@ -113,8 +98,33 @@ RSpec.describe TwitterOAuth2::Client do
                 code: 'code'
               }
             ) do
-              client.access_token!
+              token_request
             end
+          end
+        end
+
+        context 'when code_verifier is given as the first args' do
+          let(:token_request) { client.access_token! 'code_verifier' }
+          it_behaves_like :with_code_verifier
+        end
+
+        context 'when code_verifier is given as hash member' do
+          let(:token_request) { client.access_token! code_verifier: 'code_verifier' }
+          it_behaves_like :with_code_verifier
+        end
+
+        context 'otherwise' do
+          let(:token_request) { client.access_token! }
+
+          context 'when instance already has code_verifier' do
+            before do
+              client.code_verifier = 'code_verifier'
+            end
+            it_behaves_like :with_code_verifier
+          end
+
+          context 'otherwise' do
+            it_behaves_like :without_code_verifier
           end
         end
       end

@@ -33,8 +33,7 @@ client = TwitterOAuth2::Client.new(
   redirect_uri: '<YOUR-CALLBACK-URL>'
 )
 
-# NOTE: You can get PKCE code_verifier here.
-authorization_uri, code_verifier = client.authorization_uri(
+authorization_uri = client.authorization_uri(
   scope: [
     :'users.read',
     :'tweet.read',
@@ -42,6 +41,12 @@ authorization_uri, code_verifier = client.authorization_uri(
   ],
   state: SecureRandom.hex(16)
 )
+
+# NOTE:
+#  When 'TwitterOAuth2::Client#authorization_uri is called,
+#  PKCE `code_verifier` is automatically generated.
+#  You can get it here.
+code_verifier = client.code_verifier
 
 puts authorization_uri
 `open "#{authorization_uri}"`

@@ -20,9 +20,9 @@ module TwitterOAuth2
 
     def access_token!(*args)
       options = args.extract_options!
-      super :body, {
+      super({
         code_verifier: args.first || self.code_verifier
-      }.merge(options)
+      }.merge(options))
     end
 
     private

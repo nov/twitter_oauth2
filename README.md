@@ -22,7 +22,45 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+This gem is built on `rack/oauth2` gem.   
+Basically, the usage is same with [the underling gem](https://github.com/nov/rack-oauth2/wiki).
+
+The only difference is that this gem is supporting PKCE as default, since [Twitter **requires** it](https://developer.twitter.com/en/docs/twitter-api/oauth2).
+
+```ruby
+require 'twitter_oauth2'
+
+client = TwitterOAuth2::Client.new(
+  identifier: '<YOUR-CLIENT-ID>',
+  redirect_uri: '<YOUR-CALLBACK-URL>'
+)
+
+# NOTE: You can get PKCE code_verifier here.
+authorization_uri, code_verifier = client.authorization_uri(
+  scope: [
+    :'users.read',
+    :'tweet.read',
+    :'offline.access'
+  ],
+  state: SecureRandom.hex(16)
+)
+
+puts authorization_uri
+`open "#{authorization_uri}"`
+
+print 'code: ' and STDOUT.flush
+code = gets.chop
+
+# NOTE: Obtaining Access Token & Refresh Token using Authorization Code
+client.authorization_code = code
+token_response = client.access_token! code_verifier
+
+# NOTE: Refreshing Access Token using Refresh Token
+client.refresh_token = token_response.refresh_token
+client.access_token!
+```
+
+For more usage, read [the underling gem's wiki](https://github.com/nov/rack-oauth2/wiki).
 
 ## Development
 

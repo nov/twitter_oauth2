@@ -37,16 +37,15 @@ authorization_uri = client.authorization_uri(
   scope: [
     :'users.read',
     :'tweet.read',
-    :'offline.access'
-  ],
-  state: SecureRandom.hex(16)
+    :'offline.access
 )
 
 # NOTE:
-#  When 'TwitterOAuth2::Client#authorization_uri is called,
-#  PKCE `code_verifier` is automatically generated.
+#  When `TwitterOAuth2::Client#authorization_uri` is called,
+#  PKCE `code_verifier` and `state` are automatically generated.
 #  You can get it here.
 code_verifier = client.code_verifier
+state = client.state
 
 puts authorization_uri
 `open "#{authorization_uri}"`

@@ -21,9 +21,15 @@ module TwitterOAuth2
 
     def access_token!(*args)
       options = args.extract_options!
-      super :body, {
+      super({
+        # NOTE:
+        #  For some reason, Twitter requires client_id duplication both in body & header for confidentail clients.
+        #  Follow such behaviour for now.
+        #  Hopefully, I can remove this line in near future.
+        client_id: identifier,
+
         code_verifier: args.first || self.code_verifier
-      }.merge(options)
+      }.merge(options))
     end
 
     private

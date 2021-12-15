@@ -79,6 +79,9 @@ RSpec.describe TwitterOAuth2::Client do
                 grant_type: 'authorization_code',
                 code: 'code',
                 code_verifier: 'code_verifier'
+              },
+              request_header: {
+                Authorization: "Basic #{Base64.strict_encode64 'client_id:'}"
               }
             ) do
               token_request
@@ -96,6 +99,9 @@ RSpec.describe TwitterOAuth2::Client do
                 client_id: 'client_id',
                 grant_type: 'authorization_code',
                 code: 'code'
+              },
+              request_header: {
+                Authorization: "Basic #{Base64.strict_encode64 'client_id:'}"
               }
             ) do
               token_request
@@ -143,6 +149,9 @@ RSpec.describe TwitterOAuth2::Client do
               client_id: 'client_id',
               grant_type: 'refresh_token',
               refresh_token: 'refresh_token'
+            },
+            request_header: {
+              Authorization: "Basic #{Base64.strict_encode64 'client_id:'}"
             }
           ) do
             client.access_token!

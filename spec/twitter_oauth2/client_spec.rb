@@ -9,8 +9,9 @@ RSpec.describe TwitterOAuth2::Client do
   end
 
   describe 'endpoints' do
+    its(:host) { should == 'api.twitter.com' }
     its(:authorization_endpoint) { should == 'https://twitter.com/i/oauth2/authorize' }
-    its(:token_endpoint) { should == 'https://api.twitter.com/2/oauth2/token' }
+    its(:token_endpoint) { should == '/2/oauth2/token' }
   end
 
   describe '#authorization_uri' do
@@ -54,7 +55,7 @@ RSpec.describe TwitterOAuth2::Client do
 
     context 'when error is returned' do
       it 'should raise Rack::OAuth2::Client::Error' do
-        mock_response :post, client.token_endpoint, 'access_token/invalid_request', status: 400 do
+        mock_response :post, client.send(:absolute_uri_for, client.token_endpoint), 'access_token/invalid_request', status: 400 do
           expect do
             access_token
           end.to raise_error Rack::OAuth2::Client::Error

@@ -75,6 +75,7 @@ RSpec.describe TwitterOAuth2::Client do
               'https://api.twitter.com/2/oauth2/token',
               'access_token/bearer',
               params: {
+                client_id: 'client_id',
                 grant_type: 'authorization_code',
                 code: 'code',
                 code_verifier: 'code_verifier'
@@ -95,6 +96,7 @@ RSpec.describe TwitterOAuth2::Client do
               'https://api.twitter.com/2/oauth2/token',
               'access_token/bearer',
               params: {
+                client_id: 'client_id',
                 grant_type: 'authorization_code',
                 code: 'code'
               },
@@ -144,6 +146,7 @@ RSpec.describe TwitterOAuth2::Client do
             'https://api.twitter.com/2/oauth2/token',
             'access_token/bearer',
             params: {
+              client_id: 'client_id',
               grant_type: 'refresh_token',
               refresh_token: 'refresh_token'
             },

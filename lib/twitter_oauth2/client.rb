@@ -4,8 +4,9 @@ module TwitterOAuth2
 
     def initialize(attributes)
       attributes_with_default = {
+        host: 'api.twitter.com',
         authorization_endpoint: 'https://twitter.com/i/oauth2/authorize',
-        token_endpoint: 'https://api.twitter.com/2/oauth2/token'
+        token_endpoint: '/2/oauth2/token'
       }.merge(attributes)
       super attributes_with_default
     end

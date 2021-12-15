@@ -65,6 +65,23 @@ client.refresh_token = token_response.refresh_token
 client.access_token!
 ```
 
+If you want to get App-only Bearer Token (via `grant_type=client_credentials`), you need some tweaks as below.
+
+```ruby
+require 'twitter_oauth2'
+
+client = TwitterOAuth2::Client.new(
+  # NOTE: not OAuth 2.0 Client ID, but OAuth 1.0 Consumer Key (a.k.a API Key)
+  identifier:   '<YOUR-CONSUMER-KEY>',
+  # NOTE: not OAuth 2.0 Client Secret, but OAuth 1.0 Consumer Secret (a.k.a API Key Secret)
+  secret:       '<YOUR-CONSUMER-SECRET>'
+  # NOTE: Twitter has Client Credentials Grant specific token endpoint.
+  token_endpoint: '/oauth2/token',
+)
+
+client.access_token!
+```
+
 For more usage, read [the underling gem's wiki](https://github.com/nov/rack-oauth2/wiki).
 
 ## Development

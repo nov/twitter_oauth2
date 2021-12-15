@@ -72,9 +72,9 @@ require 'twitter_oauth2'
 
 client = TwitterOAuth2::Client.new(
   # NOTE: not OAuth 2.0 Client ID, but OAuth 1.0 Consumer Key (a.k.a API Key)
-  identifier:   '<YOUR-CONSUMER-KEY>',
+  identifier:     '<YOUR-CONSUMER-KEY>',
   # NOTE: not OAuth 2.0 Client Secret, but OAuth 1.0 Consumer Secret (a.k.a API Key Secret)
-  secret:       '<YOUR-CONSUMER-SECRET>'
+  secret:         '<YOUR-CONSUMER-SECRET>'
   # NOTE: Twitter has Client Credentials Grant specific token endpoint.
   token_endpoint: '/oauth2/token',
 )

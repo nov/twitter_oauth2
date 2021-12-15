@@ -12,7 +12,7 @@ module TwitterOAuth2
 
     def authorization_uri(params = {})
       authorization_session!
-      authorization_uri = super({
+      super({
         code_challenge: code_challenge,
         code_challenge_method: code_challenge_method,
         state: state

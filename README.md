@@ -29,7 +29,8 @@ The only difference is that this gem is supporting PKCE as default, since [Twitt
 require 'twitter_oauth2'
 
 client = TwitterOAuth2::Client.new(
-  identifier: '<YOUR-CLIENT-ID>',
+  identifier:   '<YOUR-CLIENT-ID>',
+  secret:       '<YOUR-CLIENT-SECRET>',
   redirect_uri: '<YOUR-CALLBACK-URL>'
 )
 
@@ -38,6 +39,7 @@ authorization_uri = client.authorization_uri(
     :'users.read',
     :'tweet.read',
     :'offline.access'
+  ]
 )
 
 # NOTE:
